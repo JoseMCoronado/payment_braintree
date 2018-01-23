@@ -31,12 +31,13 @@ class braintree_payment_sale_wizard(models.TransientModel):
         ], string='Expiration Month')
     expiration_year = fields.Char('Expiration Year', placeholder='e.g. 2020')
     cvv = fields.Char('CVV')
+    cardholder_name = fields.Char('Cardholder Name')
     amount = fields.Float('Amount')
 
     @api.multi
     def create_payment(self):
         for payment in self:
-            company = rate.env['res.users'].browse([rate.env.uid]).company_id
+            company = payment.env['res.users'].browse([payment.env.uid]).company_id
             if not company.braintree_merchant_id or not company.braintree_public_key or not company.braintree_private_key:
                  raise UserError('Missing Braintree API Credentials. Please set up in the company configuration form.')
             braintree.Configuration.configure(braintree.Environment.Sandbox,
@@ -48,7 +49,8 @@ class braintree_payment_sale_wizard(models.TransientModel):
                 "credit_card": {
                     "number": payment.credit_card_num,
                     "expiration_date": payment.expiration_month+"/"+payment.expiration_year,
-                    "cvv": payment.cvv
+                    "cvv": payment.cvv,
+                    "cardholder_name": payment.cardholder_name
                 },
                 "amount": str(payment.amount),
                 "options": {

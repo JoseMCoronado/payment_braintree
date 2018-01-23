@@ -38,6 +38,7 @@
               <group>
                 <group>
                   <field name="sale_id" invisible="1" required="1"/>
+                  <field name="cardholder_name" required="1"/>
                   <field name="credit_card_num" required="1"/>
                   <label for="expiration_month" string="Expiration Date"/>
                   <div class="o_row">
