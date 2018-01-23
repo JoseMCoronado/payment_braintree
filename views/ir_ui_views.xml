@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record model="ir.actions.act_window" id="action_braintree_payment_wizard">
+    <field name="auto_search" eval="True"/>
+    <field name="context">{}</field>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="limit">80</field>
+    <field name="name">Braintree Payment</field>
+    <field name="res_model">braintree.payment.sale.wizard</field>
+    <field name="target">new</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="view_id" eval="False"/>
+    <field name="view_ids" eval="[(6, 0, [])]"/>
+    <field name="view_mode">form</field>
+    <field name="view_type">form</field>
+  </record>
+  <record model="ir.ui.view" id="view_order_form">
+    <field name="name">x_gfp.sale.order.form.mod</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="priority">99</field>
+    <field name="arch" type="xml">
+      <xpath expr="//header" position="inside">
+        <button name="%(action_braintree_payment_wizard)d" context="{'default_sale_id':active_id}" type="action" string="Braintree Payment"/>
+      </xpath>
+    </field>
+  </record>
+  <record model="ir.ui.view" id="braintree_payment_wizard_form">
+        <field name="name">x_gfp.braintree.payment.wizard.form</field>
+        <field name="model">braintree.payment.sale.wizard</field>
+        <field name="inherit_id" eval="False"/>
+        <field name="priority">16</field>
+        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="type">form</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+          <form>
+              <group>
+                <group>
+                  <field name="sale_id" invisible="1" required="1"/>
+                  <field name="credit_card_num" required="1"/>
+                  <label for="expiration_month" string="Expiration Date"/>
+                  <div class="o_row">
+                    <field name="expiration_month" required="1"/> /
+                    <field name="expiration_year" required="1" placeholder="e.g. 2020"/>
+                  </div>
+                  <field name="cvv" required="1"/>
+                  <field name="amount" required="1"/>
+                </group>
+                <group>
+                </group>
+              </group>
+              <footer>
+                  <button name="create_payment" string="Create Payment" type="object" class="btn-primary"/>
+                  <button string="Cancel" class="btn-default" special="cancel" />
+              </footer>
+          </form>
+        </field>
+  </record>
+  <record model="ir.ui.view" id="view_company_form_mod">
+          <field name="name">x_gfp.res.company.form.mod</field>
+          <field name="model">res.company</field>
+          <field name="inherit_id" ref="base.view_company_form"/>
+          <field name="priority">99</field>
+          <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+              <page string="Braintree Payment API">
+                <group>
+                  <group>
+                    <field name="braintree_merchant_id"/>
+                    <field name="braintree_public_key"/>
+                    <field name="braintree_private_key"/>
+                  </group>
+                  <group>
+                  </group>
+                </group>
+              </page>
+            </xpath>
+          </field>
+  </record>
+</odoo>
